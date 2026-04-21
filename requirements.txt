@@ -1,0 +1,8 @@
+# Runtime requirements for running bench_runner.py
+# Pin: these are the versions used in the published benchmark (2026-04-21).
+# Regenerate via: pip install -r requirements.txt
+
+matplotlib>=3.10,<4
+numpy>=2.0,<3
+pandas>=2.2,<3
+# stdlib: urllib, json, subprocess, shlex — no extra packages needed
