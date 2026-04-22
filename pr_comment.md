@@ -2,6 +2,14 @@
 
 _Target URL: https://github.com/ggml-org/llama.cpp/pull/19493 (or as a fresh comment on Issue #20039 linking to repo)_
 
+> **UPDATE 2026-04-22** — follow-up v2 bench was added to the public
+> repo under `v2_3090_followup/` after an HF discussion comment
+> questioned `--draft-min 48` aggressiveness and the 100 % acceptance
+> number. v2 covers `--draft-min 2 --draft-max 32` and several control
+> configs, with a cross-check against current master `bcb5eeb64`
+> (post PR #22227 speculative-simple checkpoint) — same results.
+> Conclusion holds. See `v2_3090_followup/SUMMARY.md` in the repo.
+
 ---
 
 Posting a 19-config spec-decode matrix on a single RTX 3090 (SM 8.6, 24 GB, driver 580.126, CUDA 12.6) for `Qwen3.6-35B-A3B-UD-Q4_K_XL` at commit `9789512` (post-#19493 merge, pre-#20075 land). Happy to get feedback / be pointed at a config I missed.

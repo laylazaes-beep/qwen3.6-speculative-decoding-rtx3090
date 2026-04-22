@@ -1,5 +1,42 @@
 # Qwen3.6-35B-A3B speculative decoding on RTX 3090 — first public benchmark
 
+> **UPDATE 2026-04-22 — v2 follow-up bench added**
+> In response to [Oleg-dM's comment on the HF discussion](https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/discussions/14),
+> a second independent bench was run on a fresh single-3090 box, testing
+> `--draft-min 2 --draft-max 32` (Oleg's suggestion), the srogmann-style
+> `--draft-min 48 --draft-max 64`, default `--draft-min 5`, and a control
+> sweep. All artefacts live in [`v2_3090_followup/`](v2_3090_followup/)
+> with methodology + full table in
+> [`v2_3090_followup/SUMMARY.md`](v2_3090_followup/SUMMARY.md).
+>
+> **Cross-validated on current master** (`bcb5eeb64`, after PR #22227
+> `speculative-simple: add checkpoint support`) — identical results to
+> original commit within ±0.3 % noise, so the regression is not a
+> stale-commit artefact. Raw logs in
+> [`v2_3090_followup/v2_master_cross_check/`](v2_3090_followup/v2_master_cross_check/).
+>
+> Short version of what v2 adds:
+>
+> - Original "mean 120, bimodal tail 59" is the **mixture** of two
+>   regimes — prompts that keep spec-decode active all the way (collapse
+>   to 55–85 tok/s) and prompts that exhaust the draft cache and fall
+>   back to normal decode (~140 tok/s).
+> - v2 uses 5 predictable structured prompts that keep spec-decode
+>   active throughout, so the worst-case degradation (−39 % to −60 %)
+>   is more visible than the mixture average.
+> - Oleg's `--draft-min 2 --draft-max 32` beats the `--draft-min=5`
+>   defaults (65 vs 55 tok/s) but is still −54 % vs baseline 139.9.
+> - Counter-intuitive finding: aggressive `--draft-min 48 --draft-max 64`
+>   is the **least bad** recipe (−39 %) because the large draft window
+>   amortises the verify / KV overhead.
+> - `n_acc_tokens / n_gen_tokens` 100 % is real (confirmed via source
+>   reading of `common/speculative.cpp` + a `--verbose` run emitting
+>   `draft acceptance rate = 1.00000 (115 accepted / 115 generated)`).
+>
+> Conclusion of the original post stands: **no spec-decode
+> configuration on a consumer 3090 is a net win for Qwen3.6-35B-A3B
+> at Q4_K_M.**
+
 **TL;DR.** After llama.cpp [PR #19493](https://github.com/ggml-org/llama.cpp/pull/19493) (merged 2026-04-19) enabled classic draft speculative decoding for Qwen3.5/3.6 MoE models, I ran a 19-config matrix on a single RTX 3090 with `Qwen3.6-35B-A3B-UD-Q4_K_XL` via llama-server at commit `9789512`.
 
 **Finding.** No speculative-decode configuration achieves a net speedup over the non-speculative baseline on this hardware. Mean decode drops **3–12 %** across `ngram-cache`, `ngram-mod`, and classic draft with the vocab-matched `Qwen3.5-0.8B` (vocab 248320) — and **every configuration hits a bimodal tail reaching as low as 59–67 tok/s on reasoning / code prompts**, despite **100 % draft acceptance**.
