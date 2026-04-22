@@ -1,0 +1,57 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 24115 MiB):
+  Device 0: NVIDIA GeForce RTX 3090, compute capability 8.6, VMM: yes, VRAM: 24115 MiB
+--no-conversation is not supported by llama-cli
+please use llama-completion instead
+
+Loading model... |-\|/-\|/-\|/-\|/-\|/-\|/-\ 
+
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b8863-97895129e
+model      : Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+> Explain TCP vs UDP in 3 concise bullet points. /no_think
+
+| [Start thinking]
+Here's a thinking process:
+
+1.  **Analyze User Input:**
+   - **Topic:** TCP vs UDP
+   - **Format:** 3 concise bullet points
+   - **Constraint:** /no_think (implies I should output directly without showing reasoning, but I'm in a thinking block, so I'll just produce the final answer directly after this internal process)
+
+2.  **Identify Key Differences (TCP vs UDP):**
+   - TCP: Connection-oriented, reliable, ordered delivery, error-checking, flow/congestion control, slower, heavier overhead. Used for web, email, file transfer.
+   - UDP: Connectionless, unreliable, no ordering/guarantees, minimal overhead, faster, lightweight. Used for streaming, gaming, DNS, VoIP.
+
+3.  **Condense into 3 Concise Bullet Points:**
+   Need to cover the core distinction in exactly 3 bullets, each contrasting a key aspect.
+llama_memory_breakdown_print: | memory breakdown [MiB] | total   free     self   model   context   compute    unaccounted |
+llama_memory_breakdown_print: |   - CUDA0 (RTX 3090)   | 24115 =  890 + (21528 = 20798 +     232 +     497) +        1696 |
+llama_memory_breakdown_print: |   - Host               |                   555 =   515 +       0 +      40                |
+llama_perf_context_print:        load time =     335.47 ms
+llama_perf_context_print: prompt eval time =     389.08 ms /   288 tokens (    1.35 ms per token,   740.21 tokens per second)
+llama_perf_context_print:        eval time =     202.95 ms /    84 runs   (    2.42 ms per token,   413.90 tokens per second)
+llama_perf_context_print:       total time =    4343.29 ms /   372 tokens
+llama_perf_context_print:    graphs reused =         84
+
+
+[ Prompt: 478.0 t/s | Generation: 51.5 t/s ]
+
+Exiting...

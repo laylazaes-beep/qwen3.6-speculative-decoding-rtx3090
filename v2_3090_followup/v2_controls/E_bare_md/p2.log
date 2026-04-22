@@ -1,0 +1,55 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 24115 MiB):
+  Device 0: NVIDIA GeForce RTX 3090, compute capability 8.6, VMM: yes, VRAM: 24115 MiB
+--no-conversation is not supported by llama-cli
+please use llama-completion instead
+
+Loading model... |-\|/-\|/-\|/-\|/-\|/-\|/-\ 
+
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b8863-97895129e
+model      : Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+> Write a Python function fib(n) returning the first n Fibonacci numbers as a list. /no_think
+
+| [Start thinking]
+Here's a thinking process:
+
+1.  **Understand the User Request:**
+   - **Function name:** `fib(n)`
+   - **Input:** `n` (an integer, presumably non-negative)
+   - **Output:** A list containing the first `n` Fibonacci numbers
+   - **Constraint:** `/no_think` (This is a system prompt indicator, I should just output the code directly without extra explanation, but I'll follow standard best practices for the code itself)
+
+2.  **Define Fibonacci Sequence:**
+   - Typically starts with 0, 1, 1, 2, 3, 5, 8, ...
+   - Sometimes starts with 1, 1, 2, 3, 5, ...
+   - I'll assume the standard mathematical definition: F(0) = 0, F(1) = 1, F(n) = F(n-llama_memory_breakdown_print: | memory breakdown [MiB] | total   free     self   model   context   compute    unaccounted |
+llama_memory_breakdown_print: |   - CUDA0 (RTX 3090)   | 24115 =  882 + (21528 = 20798 +     232 +     497) +        1704 |
+llama_memory_breakdown_print: |   - Host               |                   555 =   515 +       0 +      40                |
+llama_perf_context_print:        load time =     332.29 ms
+llama_perf_context_print: prompt eval time =     305.63 ms /   312 tokens (    0.98 ms per token,  1020.84 tokens per second)
+llama_perf_context_print:        eval time =     316.64 ms /   136 runs   (    2.33 ms per token,   429.51 tokens per second)
+llama_perf_context_print:       total time =    3675.13 ms /   448 tokens
+llama_perf_context_print:    graphs reused =        136
+
+
+[ Prompt: 541.0 t/s | Generation: 62.3 t/s ]
+
+Exiting...

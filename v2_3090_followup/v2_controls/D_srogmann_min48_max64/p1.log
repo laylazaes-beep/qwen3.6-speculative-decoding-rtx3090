@@ -1,0 +1,58 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 24115 MiB):
+  Device 0: NVIDIA GeForce RTX 3090, compute capability 8.6, VMM: yes, VRAM: 24115 MiB
+--no-conversation is not supported by llama-cli
+please use llama-completion instead
+
+Loading model... |-\|/-\|/-\|/-\|/-\|/-\|/-\ 
+
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b8863-97895129e
+model      : Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+> Why does the sky look blue? Answer in two sentences. /no_think
+
+| [Start thinking]
+Here's a thinking process:
+
+1.  **Analyze User Input:**
+   - **Question:** Why does the sky look blue?
+   - **Constraint 1:** Answer in two sentences.
+   - **Constraint 2:** `/no_think` (This is a directive to skip internal reasoning/thinking output and just provide the final answer directly, though as an AI I always process internally, I'll just output the final answer without any meta-commentary or thinking tags).
+
+2.  **Identify Key Scientific Concept:**
+   - The sky appears blue due to Rayleigh scattering.
+   - Sunlight (white light) contains all colors of the visible spectrum.
+   - Earth's atmosphere scatters shorter wavelengths (blue/violet) more than longer wavelengths (red/yellow).
+   - Our eyes are more sensitive to blue than violet, so we perceive the sky as blue.
+
+3.  **Draft Response (mental):**
+   The skyllama_memory_breakdown_print: | memory breakdown [MiB] | total   free     self   model   context   compute    unaccounted |
+llama_memory_breakdown_print: |   - CUDA0 (RTX 3090)   | 24115 =  912 + (21528 = 20798 +     232 +     497) +        1674 |
+llama_memory_breakdown_print: |   - Host               |                   555 =   515 +       0 +      40                |
+llama_perf_context_print:        load time =     335.57 ms
+llama_perf_context_print: prompt eval time =      91.89 ms /   281 tokens (    0.33 ms per token,  3057.84 tokens per second)
+llama_perf_context_print:        eval time =     568.41 ms /   253 runs   (    2.25 ms per token,   445.10 tokens per second)
+llama_perf_context_print:       total time =    2919.18 ms /   534 tokens
+llama_perf_context_print:    graphs reused =        253
+
+
+[ Prompt: 476.1 t/s | Generation: 81.3 t/s ]
+
+Exiting...
