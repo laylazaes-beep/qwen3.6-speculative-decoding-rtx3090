@@ -1,6 +1,8 @@
 # Benchmark environment snapshot
 
-_Collected at 2026-04-21T08:00:30+08:00_
+_v1 (original 19-config bench) collected at 2026-04-21T08:00:30+08:00.
+A v2 environment snapshot appears at the bottom of this file for the
+follow-up bench in `v2_3090_followup/`._
 
 ## Hardware
 ```
@@ -104,3 +106,76 @@ llama-server \
 HOME=/home/reachym
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 ```
+
+---
+
+# v2 Benchmark Environment (follow-up bench, 2026-04-22)
+
+_For the artefacts in `v2_3090_followup/`._
+
+⚠️ **This is a different physical 3090 from the v1 bench.** v1 ran on
+the s1 box (2× RTX 3090, i7-11700); v2 ran on a single-3090 box stood
+up the same day to respond to the HF-discussion critique. Baseline
+differs by +3 % (v2: 139.9 tok/s vs v1: 135.7) which is within normal
+board-to-board variance and documented in the v2 reply.
+
+## Hardware
+```
+index, name, memory.total [MiB], driver_version, compute_cap
+0, NVIDIA GeForce RTX 3090, 24576 MiB, 580.126.09, 8.6
+```
+
+## GPU state at bench start
+```
+clocks.current.graphics : 1965 MHz
+clocks.max.graphics     : 2100 MHz
+clocks.current.memory   : 9751 MHz
+clocks.max.memory       : 9751 MHz
+power.limit             : 350.00 W
+power.default_limit     : 350.00 W
+```
+
+**Stock clocks — no overclocking.** GPU is at the factory-default power
+limit of 350 W. Relative measurements between configs are invariant to
+OC within ~±20 %; absolute numbers would scale with memory-bandwidth OC.
+
+## OS / toolchain
+- Ubuntu 24.04
+- gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+- CUDA 12.0.140 (system-installed via apt)
+- python 3.12.3
+
+## llama.cpp commits tested
+| tag | commit | notes |
+|---|---|---|
+| original | `97895129e5f2bde94d13dc01ca41ee79e9b629f2` | equivalent to v1's `9789512` short hash — same commit, post PR #19493 |
+| master | `bcb5eeb64` (as of 2026-04-22) | includes PR #22227 `speculative-simple: add checkpoint support` — the most recent spec-decode change |
+
+Both commits tested with identical configs; results agree within ±0.3 %
+noise (see `v2_3090_followup/SUMMARY.md` for the cross-check table).
+
+## Build flags
+```
+cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=86 -GNinja -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j $(nproc) --target llama-cli
+```
+
+## Models (same files as v1)
+```
+21G  ~/models/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf
+508M ~/models/Qwen3.5-0.8B-Q4_K_M.gguf
+```
+SHA-256 matches v1 (see `v2_3090_followup/v2_oleg_suggestions/01_baseline/p1.log`
+header for the `general.architecture` / `tokenizer.ggml.tokens` fields).
+
+## Bench tool
+v2 uses `llama-cli -st -no-cnv` (single-turn non-conversational) rather
+than v1's `llama-server` + Python client. Both report the same
+`[Prompt: X t/s | Generation: Y t/s]` metrics at end-of-run; differences
+in observed means between v1 and v2 are due to prompt-set selection
+(v1 covered both "spec-decode skipped" and "spec-decode active" regimes,
+v2 isolates the "spec-decode active" regime).
+
+## Script
+`v2_3090_followup/bench_3090_oleg.sh` reproduces the v2 run on any
+single-3090 box with the model files + a llama-cli binary present.

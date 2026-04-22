@@ -2,5 +2,8 @@ __pycache__/
 *.pyc
 .venv/
 *.log
+# bench evidence: per-prompt llama-cli output and verbose dumps must survive
+# `git clean` and round-trips through `git add -A`.
+!v2_3090_followup/**/*.log
 .DS_Store
 social/
