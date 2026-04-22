@@ -1,0 +1,590 @@
+{
+  "bench_version": "v2",
+  "date": "2026-04-22",
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "memory_mib": 24576,
+    "driver": "580.126.09",
+    "cuda": "12.0.140",
+    "os": "Ubuntu 24.04",
+    "gcc": "13.3.0",
+    "clocks_note": "stock (no OC): graphics 1965 MHz / max 2100, memory 9751 MHz, power 350 W"
+  },
+  "models": {
+    "main": "unsloth/Qwen3.6-35B-A3B-GGUF :: Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf",
+    "draft": "unsloth/Qwen3.5-0.8B-GGUF :: Qwen3.5-0.8B-Q4_K_M.gguf"
+  },
+  "commits": [
+    {
+      "name": "original",
+      "sha": "97895129e5f2bde94d13dc01ca41ee79e9b629f2",
+      "short": "97895129e",
+      "context": "post PR #19493 merge (same commit as v1.0's 9789512 short hash)"
+    },
+    {
+      "name": "master",
+      "sha": "bcb5eeb64",
+      "short": "bcb5eeb64",
+      "context": "post PR #22227 'speculative-simple: add checkpoint support'"
+    }
+  ],
+  "prompts": [
+    "Why does the sky look blue? Answer in two sentences. /no_think",
+    "Write a Python function fib(n) returning the first n Fibonacci numbers as a list. /no_think",
+    "Explain TCP vs UDP in 3 concise bullet points. /no_think",
+    "Give 5 numbered steps to cook firm tofu at home. /no_think",
+    "Write a short haiku about debugging a memory leak at 2am. /no_think"
+  ],
+  "common_flags": [
+    "-ngl",
+    "999",
+    "-c",
+    "16384",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "-n",
+    "200",
+    "--temp",
+    "0.5",
+    "--seed",
+    "42",
+    "-no-cnv",
+    "-st"
+  ],
+  "runs_original_commit": {
+    "baseline": {
+      "dir": "v2_oleg_suggestions/01_baseline",
+      "extra_args": [],
+      "note": "no spec-decode",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 472.7,
+          "gen_t_per_s": 140.0
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 537.1,
+          "gen_t_per_s": 139.7
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 475.0,
+          "gen_t_per_s": 139.9
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 438.9,
+          "gen_t_per_s": 139.8
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 497.1,
+          "gen_t_per_s": 139.9
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 139.86,
+        "min_gen": 139.7,
+        "max_gen": 140.0,
+        "std_gen": 0.11
+      }
+    },
+    "oleg_draft_2_32": {
+      "dir": "v2_oleg_suggestions/02_oleg_draft_2_32",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-min",
+        "2",
+        "--draft-max",
+        "32"
+      ],
+      "note": "Oleg-dM's HF-discussion suggestion",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 445.0,
+          "gen_t_per_s": 63.6
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 544.9,
+          "gen_t_per_s": 75.8
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 481.5,
+          "gen_t_per_s": 62.9
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 477.9,
+          "gen_t_per_s": 61.9
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 457.0,
+          "gen_t_per_s": 61.0
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 65.04,
+        "min_gen": 61.0,
+        "max_gen": 75.8,
+        "std_gen": 6.1
+      }
+    },
+    "oleg_draft_2_16": {
+      "dir": "v2_oleg_suggestions/03_oleg_draft_2_16",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-min",
+        "2",
+        "--draft-max",
+        "16"
+      ],
+      "note": "Oleg-style tighter upper bound",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 480.1,
+          "gen_t_per_s": 65.5
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 542.6,
+          "gen_t_per_s": 76.6
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 479.8,
+          "gen_t_per_s": 63.1
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 446.4,
+          "gen_t_per_s": 65.6
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 503.8,
+          "gen_t_per_s": 60.6
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 66.28,
+        "min_gen": 60.6,
+        "max_gen": 76.6,
+        "std_gen": 6.12
+      }
+    },
+    "oleg_draft_2_64": {
+      "dir": "v2_oleg_suggestions/04_draft_2_64",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-min",
+        "2",
+        "--draft-max",
+        "64"
+      ],
+      "note": "Oleg-style wider upper bound",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 418.6,
+          "gen_t_per_s": 63.7
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 541.3,
+          "gen_t_per_s": 75.3
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 473.9,
+          "gen_t_per_s": 62.2
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 463.1,
+          "gen_t_per_s": 60.6
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 456.3,
+          "gen_t_per_s": 61.5
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 64.66,
+        "min_gen": 60.6,
+        "max_gen": 75.3,
+        "std_gen": 6.05
+      }
+    },
+    "default_draft_max8": {
+      "dir": "v2_controls/A_default_draft_max8",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-max",
+        "8"
+      ],
+      "note": "default --draft-min=5",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 451.2,
+          "gen_t_per_s": 59.0
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 541.3,
+          "gen_t_per_s": 63.0
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 478.0,
+          "gen_t_per_s": 51.5
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 476.6,
+          "gen_t_per_s": 55.2
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 505.1,
+          "gen_t_per_s": 53.8
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 56.5,
+        "min_gen": 51.5,
+        "max_gen": 63.0,
+        "std_gen": 4.54
+      }
+    },
+    "default_draft_max16": {
+      "dir": "v2_controls/B_default_draft_max16",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-max",
+        "16"
+      ],
+      "note": "default --draft-min=5",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 431.9,
+          "gen_t_per_s": 54.6
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 543.8,
+          "gen_t_per_s": 62.7
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 464.1,
+          "gen_t_per_s": 53.7
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 478.2,
+          "gen_t_per_s": 54.0
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 496.8,
+          "gen_t_per_s": 53.3
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 55.66,
+        "min_gen": 53.3,
+        "max_gen": 62.7,
+        "std_gen": 3.96
+      }
+    },
+    "default_draft_max32": {
+      "dir": "v2_controls/C_default_draft_max32",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-max",
+        "32"
+      ],
+      "note": "default --draft-min=5",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 476.8,
+          "gen_t_per_s": 54.0
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 543.1,
+          "gen_t_per_s": 63.1
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 477.6,
+          "gen_t_per_s": 53.2
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 474.1,
+          "gen_t_per_s": 52.9
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 505.5,
+          "gen_t_per_s": 53.3
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 55.3,
+        "min_gen": 52.9,
+        "max_gen": 63.1,
+        "std_gen": 4.38
+      }
+    },
+    "srogmann_min48_max64": {
+      "dir": "v2_controls/D_srogmann_min48_max64",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-min",
+        "48",
+        "--draft-max",
+        "64"
+      ],
+      "note": "srogmann-style aggressive",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 476.1,
+          "gen_t_per_s": 81.3
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 536.8,
+          "gen_t_per_s": 84.4
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 483.5,
+          "gen_t_per_s": 88.0
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 427.8,
+          "gen_t_per_s": 86.7
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 497.6,
+          "gen_t_per_s": 87.4
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 85.56,
+        "min_gen": 81.3,
+        "max_gen": 88.0,
+        "std_gen": 2.74
+      }
+    },
+    "bare_md": {
+      "dir": "v2_controls/E_bare_md",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf"
+      ],
+      "note": "bare -md, all defaults",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 480.4,
+          "gen_t_per_s": 54.9
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 541.0,
+          "gen_t_per_s": 62.3
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 478.2,
+          "gen_t_per_s": 53.5
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 478.1,
+          "gen_t_per_s": 53.9
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 499.7,
+          "gen_t_per_s": 52.8
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 55.48,
+        "min_gen": 52.8,
+        "max_gen": 62.3,
+        "std_gen": 3.89
+      }
+    }
+  },
+  "runs_master_commit": {
+    "baseline": {
+      "dir": "v2_master_cross_check/M1_baseline",
+      "extra_args": [],
+      "note": "master baseline",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 470.7,
+          "gen_t_per_s": 139.1
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 532.3,
+          "gen_t_per_s": 140.0
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 474.1,
+          "gen_t_per_s": 139.7
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 468.8,
+          "gen_t_per_s": 139.0
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 492.5,
+          "gen_t_per_s": 139.5
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 139.46,
+        "min_gen": 139.0,
+        "max_gen": 140.0,
+        "std_gen": 0.42
+      }
+    },
+    "oleg_draft_2_32": {
+      "dir": "v2_master_cross_check/M2_oleg_draft_2_32",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-min",
+        "2",
+        "--draft-max",
+        "32"
+      ],
+      "note": "master, Oleg's suggestion",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 481.9,
+          "gen_t_per_s": 64.3
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 540.7,
+          "gen_t_per_s": 75.8
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 463.4,
+          "gen_t_per_s": 62.8
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 478.0,
+          "gen_t_per_s": 61.6
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 462.4,
+          "gen_t_per_s": 61.4
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 65.18,
+        "min_gen": 61.4,
+        "max_gen": 75.8,
+        "std_gen": 6.05
+      }
+    },
+    "srogmann_min48_max64": {
+      "dir": "v2_master_cross_check/M3_srogmann_48_64",
+      "extra_args": [
+        "-md",
+        "Qwen3.5-0.8B-Q4_K_M.gguf",
+        "--draft-min",
+        "48",
+        "--draft-max",
+        "64"
+      ],
+      "note": "master, srogmann-style",
+      "runs": [
+        {
+          "prompt_idx": 1,
+          "prompt_t_per_s": 463.2,
+          "gen_t_per_s": 81.0
+        },
+        {
+          "prompt_idx": 2,
+          "prompt_t_per_s": 544.8,
+          "gen_t_per_s": 84.6
+        },
+        {
+          "prompt_idx": 3,
+          "prompt_t_per_s": 482.8,
+          "gen_t_per_s": 87.6
+        },
+        {
+          "prompt_idx": 4,
+          "prompt_t_per_s": 481.5,
+          "gen_t_per_s": 87.3
+        },
+        {
+          "prompt_idx": 5,
+          "prompt_t_per_s": 505.0,
+          "gen_t_per_s": 87.4
+        }
+      ],
+      "summary": {
+        "n_runs": 5,
+        "mean_gen": 85.58,
+        "min_gen": 81.0,
+        "max_gen": 87.6,
+        "std_gen": 2.84
+      }
+    }
+  }
+}

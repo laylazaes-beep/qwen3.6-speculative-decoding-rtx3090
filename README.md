@@ -37,6 +37,8 @@
 > configuration on a consumer 3090 is a net win for Qwen3.6-35B-A3B
 > at Q4_K_M.**
 
+![v2 bench · all configs vs baseline](v2_3090_followup/plot_v2_configs.png)
+
 **TL;DR.** After llama.cpp [PR #19493](https://github.com/ggml-org/llama.cpp/pull/19493) (merged 2026-04-19) enabled classic draft speculative decoding for Qwen3.5/3.6 MoE models, I ran a 19-config matrix on a single RTX 3090 with `Qwen3.6-35B-A3B-UD-Q4_K_XL` via llama-server at commit `9789512`.
 
 **Finding.** No speculative-decode configuration achieves a net speedup over the non-speculative baseline on this hardware. Mean decode drops **3–12 %** across `ngram-cache`, `ngram-mod`, and classic draft with the vocab-matched `Qwen3.5-0.8B` (vocab 248320) — and **every configuration hits a bimodal tail reaching as low as 59–67 tok/s on reasoning / code prompts**, despite **100 % draft acceptance**.
