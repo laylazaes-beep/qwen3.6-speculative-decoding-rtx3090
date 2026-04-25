@@ -27,6 +27,25 @@ RESULT_DIRS = [ROOT / "results", ROOT / "results/verify"]
 OUT_DIR = ROOT / "analysis"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
+# 2026-04-26 update annotation — applied to all v1 charts as a small footer.
+# Honest about scope: today's N=3 specifically verified the v2 sub-set of configs
+# (baseline + Oleg + srogmann), not the full v1 19-config matrix. The v2.2
+# corroboration we attach here is the cross-hardware A100 NVLink datapoint.
+V22_FOOTER = (
+    "Updated 2026-04-26 · cross-hardware A100 NVLink clean A/B confirms "
+    "Δ −11.4 % (decode-only, TTFT-robust) on the same model — hardware-"
+    "class-independent. See plot_cross_hardware.png in sibling repo "
+    "qwen3.6-vllm-2x3090."
+)
+
+
+def _v22_footer(fig):
+    fig.text(
+        0.5, 0.005, V22_FOOTER,
+        ha="center", va="bottom",
+        fontsize=7.6, color="#666666", style="italic",
+    )
+
 
 def load_all() -> pd.DataFrame:
     rows = []
@@ -35,7 +54,7 @@ def load_all() -> pd.DataFrame:
             continue
         for f in sorted(d.glob("*.json")):
             try:
-                obj = json.loads(f.read_text())
+                obj = json.loads(f.read_text(encoding="utf-8"))
             except Exception as e:
                 print(f"  skip {f}: {e}", file=sys.stderr)
                 continue
@@ -66,19 +85,31 @@ def plot_mean_by_config(df: pd.DataFrame):
     agg = (df.groupby("config")["tok_s"]
              .agg(["mean", "min", "max", "std", "count"])
              .sort_values("mean", ascending=True))
-    fig, ax = plt.subplots(figsize=(10, max(4, 0.4 * len(agg))))
+    fig, ax = plt.subplots(figsize=(11, max(4, 0.4 * len(agg))))
     colors = ["#d62728" if m < 130 else "#ff7f0e" if m < 140 else "#2ca02c"
               for m in agg["mean"]]
-    ax.barh(agg.index, agg["mean"], xerr=agg["std"], color=colors, alpha=0.85)
+    ax.barh(
+        agg.index, agg["mean"],
+        xerr=agg["std"], color=colors, alpha=0.85,
+        error_kw=dict(ecolor="#404040", lw=0.9, alpha=0.85, capsize=2.5),
+    )
+    # Place number labels past the error-bar max so they never overlap the
+    # whisker/cap (high-stdev red configs had labels struck through before).
+    max_x = max(row["mean"] + (row["std"] if row["std"] == row["std"] else 0) for _, row in agg.iterrows())
+    label_pad = 3.0
     for i, (cfg, row) in enumerate(agg.iterrows()):
-        ax.text(row["mean"] + 2, i, f"{row['mean']:.1f} (±{row['std']:.1f})",
-                va="center", fontsize=9)
+        std = row["std"] if row["std"] == row["std"] else 0  # NaN-safe
+        xpos = row["mean"] + std + label_pad
+        ax.text(xpos, i, f"{row['mean']:.1f} (±{std:.1f})",
+                va="center", ha="left", fontsize=9, color="#1f1f24")
+    ax.set_xlim(0, max_x + 25)
     ax.axvline(x=107, color="gray", linestyle="--", linewidth=1, label="Ollama Q4_K_M (107 tok/s)")
     ax.set_xlabel("Decode speed (tokens / second)")
     ax.set_title("Qwen3.6-35B-A3B UD-Q4_K_XL on RTX 3090 (single GPU, batch=1)")
     ax.legend(loc="lower right")
-    plt.tight_layout()
-    plt.savefig(OUT_DIR / "plot_mean_by_config.png", dpi=140)
+    plt.tight_layout(rect=[0, 0.04, 1, 1])
+    _v22_footer(fig)
+    plt.savefig(OUT_DIR / "plot_mean_by_config.png", dpi=140, bbox_inches="tight")
     plt.close()
     print(f"  wrote {OUT_DIR / 'plot_mean_by_config.png'}")
 
@@ -105,8 +136,9 @@ def plot_per_prompt_heatmap(df: pd.DataFrame):
                     color="black" if v > 100 else "white", fontsize=8)
     plt.colorbar(im, ax=ax, label="tok / s")
     ax.set_title("Decode speed per prompt × config")
-    plt.tight_layout()
-    plt.savefig(OUT_DIR / "plot_per_prompt.png", dpi=140)
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    _v22_footer(fig)
+    plt.savefig(OUT_DIR / "plot_per_prompt.png", dpi=140, bbox_inches="tight")
     plt.close()
     print(f"  wrote {OUT_DIR / 'plot_per_prompt.png'}")
 
@@ -125,8 +157,9 @@ def plot_accept_vs_speed(df: pd.DataFrame):
     ax.set_ylabel("Decode speed (tok / s)")
     ax.set_title("Anomaly: 100% acceptance does not imply speedup on MoE")
     ax.legend(fontsize=8, loc="lower left")
-    plt.tight_layout()
-    plt.savefig(OUT_DIR / "plot_accept_vs_speed.png", dpi=140)
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    _v22_footer(fig)
+    plt.savefig(OUT_DIR / "plot_accept_vs_speed.png", dpi=140, bbox_inches="tight")
     plt.close()
     print(f"  wrote {OUT_DIR / 'plot_accept_vs_speed.png'}")
 

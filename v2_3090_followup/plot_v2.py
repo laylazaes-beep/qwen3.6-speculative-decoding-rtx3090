@@ -158,20 +158,36 @@ cross_check_note = (
     f"--draft-min 48/64 → {ms:.1f}   "
     "identical within ±0.3 %"
 )
+
+# v2.2 update — N=3 trial replication on a fresh standalone 3090 host
+# (2026-04-26).  Three configs above × 3 trials × 5 prompts = 15 datapoints
+# per config.  Confirms v2.0 numbers are not single-trial flukes.
+n3_badge = (
+    "N=3 verified 2026-04-26  →  "
+    "baseline 139.19  ·  --draft-min 2/32 → 65.24  ·  "
+    "--draft-min 48/64 → 85.50   "
+    "matches v2.0 within <0.5 pp  ·  run-to-run stdev <0.11 tok/s"
+)
 fig.text(
-    0.5, 0.035, cross_check_note,
+    0.5, 0.072, n3_badge,
     ha="center", va="bottom",
-    fontsize=9.0, color=MUTED,
+    fontsize=8.6, color=NAVY,
+    family="monospace", fontweight="bold",
+)
+fig.text(
+    0.5, 0.040, cross_check_note,
+    ha="center", va="bottom",
+    fontsize=8.6, color=MUTED,
     family="monospace",
 )
 fig.text(
-    0.995, 0.01,
-    "github.com/thc1006/qwen3.6-speculative-decoding-rtx3090   ·   v2.0",
+    0.995, 0.012,
+    "github.com/thc1006/qwen3.6-speculative-decoding-rtx3090   ·   v2.2",
     ha="right", va="bottom",
     fontsize=7.5, color="#9a9a9a", family="monospace",
 )
 
-plt.tight_layout(rect=[0.0, 0.06, 1, 1.0])
+plt.tight_layout(rect=[0.0, 0.10, 1, 1.0])
 out = HERE / "plot_v2_configs.png"
 plt.savefig(out, dpi=160, bbox_inches="tight", facecolor="white")
 print(f"Wrote {out}")
