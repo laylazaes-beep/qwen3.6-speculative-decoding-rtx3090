@@ -6,6 +6,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning is not strictly semver — each numbered release is a public
 publication point with its own data set.
 
+## [v2.2] — 2026-04-26
+
+### Changed
+- README cross-engine paragraph: disclose 3090 vLLM published config
+  confound (baseline `--gpu-memory-utilization 0.90 --max-num-seqs 8`
+  vs MTP run `0.80 / 2`); cite **2× A100-80GB SXM4 NVLink** Modal clean
+  A/B as the canonical cross-hardware MTP datapoint (prompt-4
+  decode-only delta **−11.4 %**, TTFT-robust).
+- README "Why" paragraph: remove "memory-bandwidth-bound" attribution.
+  The mechanism is **bandwidth-independent** — the same negative
+  direction is now observed on (a) consumer 3090 GDDR6X 936 GB/s,
+  (b) datacenter A100 SXM4 HBM2e 2 TB/s + NVLink, (c) Hopper H20-3e
+  per [vllm #38182](https://github.com/vllm-project/vllm/issues/38182).
+- Replace "engine-independent on Ampere" with "**hardware-class-
+  independent at single-stream batch=1** across consumer Ampere +
+  datacenter Ampere (and Hopper per #38182)".
+
+### Added
+- README image hot-link to cross-hardware comparison chart hosted in
+  the sibling `qwen3.6-vllm-2x3090` repo (`analysis/plot_cross_hardware.png`).
+- N=3 trial replication on a fresh standalone 3090 host of the v2 numbers
+  (baseline 139.19, Oleg `--draft-min 2 --draft-max 32` 65.24, srogmann
+  `--draft-min 48 --draft-max 64` 85.50). Run-to-run stdev <0.11 tok/s,
+  matching v2 published 139.9/65.0/85.6 within <0.5 pp. Addresses the
+  N=1 caveat in v2 limitations.
+
 ## [v2.1] — 2026-04-25
 
 ### Added
