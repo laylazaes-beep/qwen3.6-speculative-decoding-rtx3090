@@ -43,6 +43,8 @@
 
 **Finding.** No speculative-decode configuration achieves a net speedup over the non-speculative baseline on this hardware. Mean decode drops **3–12 %** across `ngram-cache`, `ngram-mod`, and classic draft with the vocab-matched `Qwen3.5-0.8B` (vocab 248320) — and **every configuration hits a bimodal tail reaching as low as 59–67 tok/s on reasoning / code prompts**, despite **100 % draft acceptance**.
 
+**Cross-engine confirmation (2026-04-25):** the same negative pattern holds in **vLLM 0.19.1** with `--speculative-config method=mtp num_speculative_tokens=1` (qwen3.6's built-in MTP heads): mean **−12 %** throughput vs no-MTP (111 vs 126 tok/s), worst-case run dropped to 75 tok/s (variance **65× larger**). The MoE-overhead phenomenon described below is therefore **engine-independent** for this model on Ampere — it is not a llama.cpp implementation gap. Full data and JSON: [thc1006/qwen3.6-vllm-2x3090](https://github.com/thc1006/qwen3.6-vllm-2x3090).
+
 This is consistent with the MoE-specific pathology in [MoESD (arXiv 2505.19645)](https://arxiv.org/html/2505.19645) and [Utility-Driven SD for MoE (arXiv 2506.20675)](https://arxiv.org/pdf/2506.20675): for a 3B-active MoE like A3B, draft batch `K` stays below the expert-saturation threshold (~94 tokens for this sparsity), so every extra draft token triggers new expert loading that outweighs the verification savings.
 
 ![Mean decode by config](analysis/plot_mean_by_config.png)
@@ -107,7 +109,7 @@ For Qwen3.6-35B-A3B on a single RTX 3090 as of 2026-04-21:
 - **Do** use the baseline llama-server setup above; `135.7 tok/s` is the fastest current single-request decode.
 - If you previously ran Qwen3.6 via Ollama 0.20.x with `Q4_K_M` and saw ~107 tok/s, switching to llama-server with the `UD-Q4_K_XL` quant is itself a **+27 %** speedup before any speculation.
 
-Situations where this may not apply: (i) A10B-class and larger MoE variants, where active params cross the expert-saturation threshold; (ii) after PR #20075 lands and (possibly) fixes the CUDA-side checkpoint path on Ampere; (iii) with a future smaller-bpw draft model distilled specifically for A3B that can sustain very large `K`.
+Situations where this may not apply: (i) A10B-class and larger MoE variants, where active params cross the expert-saturation threshold; (ii) after PR #20075 lands and (possibly) fixes the CUDA-side checkpoint path on Ampere; (iii) with a future smaller-bpw draft model distilled specifically for A3B that can sustain very large `K`; (iv) **batched multi-user serving** — speculative decoding's verification cost can amortise across concurrent requests, but I have not benched this path for A3B; this study covers single-stream voice-dialog only. The vLLM MTP cross-check (linked above) found the same single-stream net loss, suggesting the engine isn't the issue.
 
 ## Reproduce
 
@@ -153,6 +155,7 @@ Raw per-request timings for every run are in [`results/*.json`](results/) and [`
 
 ## Related reading
 
+- **[thc1006/qwen3.6-vllm-2x3090](https://github.com/thc1006/qwen3.6-vllm-2x3090)** — sibling repo. Same model, 2× RTX 3090, vLLM 0.19.1 with `--speculative-config method=mtp` (qwen3.6's built-in MTP heads): mean −12 % throughput, variance 65× larger. Confirms the negative finding is engine-independent.
 - [llama.cpp PR #19493 — speculative checkpointing (MERGED 2026-04-19)](https://github.com/ggml-org/llama.cpp/pull/19493)
 - [llama.cpp PR #20075 — follow-up fix (OPEN)](https://github.com/ggml-org/llama.cpp/pull/20075)
 - [llama.cpp Issue #20039 — original feature request](https://github.com/ggml-org/llama.cpp/issues/20039)
