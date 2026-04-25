@@ -6,21 +6,49 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning is not strictly semver — each numbered release is a public
 publication point with its own data set.
 
-## [Unreleased]
+## [v2.1] — 2026-04-25
 
 ### Added
-- README: cross-engine confirmation note in TL;DR + Related reading
-  pointer to sibling repo
+- README **Validation timeline (post-publication)** section consolidating six
+  independent corroborations and one academic theoretical framing that have
+  appeared since v1 / v2:
+  - [MoE-Spec (arXiv 2602.16052)](https://arxiv.org/abs/2602.16052) names
+    the phenomenon ("expert budgeting") and proposes a training-free
+    verification-time budget cap.
+  - [Alloc-MoE (arXiv 2604.08133)](https://arxiv.org/abs/2604.08133) and
+    [XShare (arXiv 2602.07265)](https://arxiv.org/pdf/2602.07265) frame
+    the same expert-saturation pressure.
+  - [vllm #35387](https://github.com/vllm-project/vllm/issues/35387) —
+    H100 + FP8 + Qwen3-Next-80B-A3B with `method=qwen3_next_mtp` reports
+    −76.5 % latency regression (different hardware/quant/arch from this
+    bench, suspected `mamba_postprocess` CPU sync; same direction).
+  - [vllm #38182](https://github.com/vllm-project/vllm/issues/38182) —
+    H20-3e + Qwen3.5-35B-A3B + MTP drops prefix-cache hit rate
+    ≈92 % → ≈71 %; @Angazenn pinpoints the cause to
+    `single_type_kv_cache_manager.py:L457`.
+  - [vLLM Qwen3.5/3.6 official Recipes](https://docs.vllm.ai/projects/recipes/en/latest/Qwen/Qwen3.5.html)
+    now state up-front that "MTP-1 reduces per-token latency but degrades
+    text throughput under high concurrency".
+- README cross-engine confirmation note in TL;DR + Related reading pointer
+  to sibling repo
   [`thc1006/qwen3.6-vllm-2x3090`](https://github.com/thc1006/qwen3.6-vllm-2x3090).
-  vLLM 0.19.1 with `--speculative-config method=mtp k=1` (qwen3.6's
-  built-in MTP heads) on 2× RTX 3090 also nets a 12 % slowdown vs
-  no-MTP baseline (111 vs 126 tok/s) with variance 65× larger.
-  Establishes that the negative finding is engine-independent for this
-  model on Ampere — not a llama.cpp implementation gap.
-- README: applicability note (iv) — batched multi-user serving caveat,
-  with cross-link to the vLLM MTP single-stream confirmation.
+- README applicability note (iv) — batched multi-user serving caveat —
+  and (v) — explicit scope: this bench tests `ngram-cache`, `ngram-mod`,
+  classic `--model-draft` in llama.cpp and `mtp k=1` in vLLM. **EAGLE-3**
+  with CUDA graphs (vLLM Model Runner V2) is not evaluated here.
+- README counter-example block: corrected attribution for the +15–45 %
+  Qwen3.5-122B-A10B speedup on PR #20075 — that data is from the PR
+  author's M3 Max bench plus @0xSero's AMD Strix Halo follow-up, not
+  srogmann's bench. Strix Halo also reports up to **+119 %** with the
+  REAP-pruned variant on gfx1151.
 
-### Older Unreleased entries (carried over from before today)
+### Changed
+- README applicability note (ii) — `[PR #20075](https://github.com/ggml-org/llama.cpp/pull/20075)`
+  was open at v1 publication; on 2026-04-25 a community comment suggested
+  it can be closed because its functionality is superseded elsewhere. The
+  note now reflects that the hybrid-SSM/MoE checkpoint situation is fluid.
+
+### Older Unreleased entries (carried over from earlier in 2026-04-22 → 2026-04-25)
 - `v2_3090_followup/results_v2.json` — machine-readable summary of all
   v2 runs (per-prompt `llama-cli` stats + per-config mean / min / max /
   std), extracted from the `.log` artefacts.
