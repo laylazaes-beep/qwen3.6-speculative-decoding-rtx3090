@@ -9,6 +9,16 @@ _Target URL: https://github.com/ggml-org/llama.cpp/pull/19493 (or as a fresh com
 > configs, with a cross-check against current master `bcb5eeb64`
 > (post PR #22227 speculative-simple checkpoint) — same results.
 > Conclusion holds. See `v2_3090_followup/SUMMARY.md` in the repo.
+>
+> **UPDATE 2026-04-25 — cross-engine confirmation.** Tested the same
+> model on vLLM 0.19.1 with `--speculative-config method=mtp
+> num_speculative_tokens=1` (qwen3.6's built-in MTP heads) on 2× RTX
+> 3090 TP=2: mean **111 tok/s vs no-MTP 126** (−12 %), worst-case run
+> 75 tok/s (variance ~65× larger, same bimodal-tail pattern as
+> llama.cpp). Same negative direction across both engines suggests the
+> regression is a **model + hardware** property — not a llama.cpp
+> implementation issue. Full data:
+> [thc1006/qwen3.6-vllm-2x3090](https://github.com/thc1006/qwen3.6-vllm-2x3090).
 
 ---
 

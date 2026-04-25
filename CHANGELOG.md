@@ -9,6 +9,18 @@ publication point with its own data set.
 ## [Unreleased]
 
 ### Added
+- README: cross-engine confirmation note in TL;DR + Related reading
+  pointer to sibling repo
+  [`thc1006/qwen3.6-vllm-2x3090`](https://github.com/thc1006/qwen3.6-vllm-2x3090).
+  vLLM 0.19.1 with `--speculative-config method=mtp k=1` (qwen3.6's
+  built-in MTP heads) on 2× RTX 3090 also nets a 12 % slowdown vs
+  no-MTP baseline (111 vs 126 tok/s) with variance 65× larger.
+  Establishes that the negative finding is engine-independent for this
+  model on Ampere — not a llama.cpp implementation gap.
+- README: applicability note (iv) — batched multi-user serving caveat,
+  with cross-link to the vLLM MTP single-stream confirmation.
+
+### Older Unreleased entries (carried over from before today)
 - `v2_3090_followup/results_v2.json` — machine-readable summary of all
   v2 runs (per-prompt `llama-cli` stats + per-config mean / min / max /
   std), extracted from the `.log` artefacts.
