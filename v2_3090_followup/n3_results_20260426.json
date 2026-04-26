@@ -1,0 +1,301 @@
+{
+  "v": 1,
+  "harness": "5 prompts x max_tokens=200 x temperature=0.5 x seed=42",
+  "n_trials": 3,
+  "host": "standalone 3090 (tailscale-3090, 100.112.135.98)",
+  "gpu": "1x RTX 3090 24GB, no power limit, no overclock",
+  "llama_cpp": "build 8889 (bcb5eeb64), post PR #22227 speculative-simple checkpoint support",
+  "main_model": "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf (~21 GB)",
+  "draft_model": "Qwen3.5-0.8B-Q4_K_M.gguf (~508 MB, vocab-matched)",
+  "common_args": "-ngl 999 -c 16384 -fa on -ctk q8_0 -ctv q8_0 -n 200 --temp 0.5 --seed 42 -no-cnv -st",
+  "timestamp": "2026-04-25T22:52:20.877669Z",
+  "configs": {
+    "01_baseline": {
+      "per_trial": [
+        {
+          "trial": 1,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 136.5
+            },
+            {
+              "prompt": 2,
+              "tok_s": 139.7
+            },
+            {
+              "prompt": 3,
+              "tok_s": 139.2
+            },
+            {
+              "prompt": 4,
+              "tok_s": 139.9
+            },
+            {
+              "prompt": 5,
+              "tok_s": 139.9
+            }
+          ],
+          "trial_mean": 139.04,
+          "trial_stdev_pop": 1.296
+        },
+        {
+          "trial": 2,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 139.5
+            },
+            {
+              "prompt": 2,
+              "tok_s": 138.8
+            },
+            {
+              "prompt": 3,
+              "tok_s": 139.4
+            },
+            {
+              "prompt": 4,
+              "tok_s": 139.3
+            },
+            {
+              "prompt": 5,
+              "tok_s": 139.4
+            }
+          ],
+          "trial_mean": 139.28,
+          "trial_stdev_pop": 0.248
+        },
+        {
+          "trial": 3,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 139.4
+            },
+            {
+              "prompt": 2,
+              "tok_s": 139.1
+            },
+            {
+              "prompt": 3,
+              "tok_s": 139.5
+            },
+            {
+              "prompt": 4,
+              "tok_s": 139.2
+            },
+            {
+              "prompt": 5,
+              "tok_s": 139.0
+            }
+          ],
+          "trial_mean": 139.24,
+          "trial_stdev_pop": 0.185
+        }
+      ],
+      "n": 15,
+      "mean_tok_s": 139.19,
+      "min_tok_s": 136.5,
+      "max_tok_s": 139.9,
+      "stdev_pop": 0.776,
+      "run_to_run_stdev": 0.105
+    },
+    "02_oleg_draft_2_32": {
+      "per_trial": [
+        {
+          "trial": 1,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 63.8
+            },
+            {
+              "prompt": 2,
+              "tok_s": 75.8
+            },
+            {
+              "prompt": 3,
+              "tok_s": 62.4
+            },
+            {
+              "prompt": 4,
+              "tok_s": 62.0
+            },
+            {
+              "prompt": 5,
+              "tok_s": 62.0
+            }
+          ],
+          "trial_mean": 65.2,
+          "trial_stdev_pop": 5.341
+        },
+        {
+          "trial": 2,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 64.2
+            },
+            {
+              "prompt": 2,
+              "tok_s": 75.8
+            },
+            {
+              "prompt": 3,
+              "tok_s": 62.8
+            },
+            {
+              "prompt": 4,
+              "tok_s": 61.7
+            },
+            {
+              "prompt": 5,
+              "tok_s": 61.5
+            }
+          ],
+          "trial_mean": 65.2,
+          "trial_stdev_pop": 5.386
+        },
+        {
+          "trial": 3,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 64.4
+            },
+            {
+              "prompt": 2,
+              "tok_s": 75.8
+            },
+            {
+              "prompt": 3,
+              "tok_s": 62.9
+            },
+            {
+              "prompt": 4,
+              "tok_s": 61.9
+            },
+            {
+              "prompt": 5,
+              "tok_s": 61.6
+            }
+          ],
+          "trial_mean": 65.32,
+          "trial_stdev_pop": 5.33
+        }
+      ],
+      "n": 15,
+      "mean_tok_s": 65.24,
+      "min_tok_s": 61.5,
+      "max_tok_s": 75.8,
+      "stdev_pop": 5.353,
+      "run_to_run_stdev": 0.057,
+      "delta_pct_vs_baseline": -53.1
+    },
+    "03_srogmann_draft_48_64": {
+      "per_trial": [
+        {
+          "trial": 1,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 81.0
+            },
+            {
+              "prompt": 2,
+              "tok_s": 84.5
+            },
+            {
+              "prompt": 3,
+              "tok_s": 87.6
+            },
+            {
+              "prompt": 4,
+              "tok_s": 87.2
+            },
+            {
+              "prompt": 5,
+              "tok_s": 87.6
+            }
+          ],
+          "trial_mean": 85.58,
+          "trial_stdev_pop": 2.566
+        },
+        {
+          "trial": 2,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 81.3
+            },
+            {
+              "prompt": 2,
+              "tok_s": 84.4
+            },
+            {
+              "prompt": 3,
+              "tok_s": 87.5
+            },
+            {
+              "prompt": 4,
+              "tok_s": 87.2
+            },
+            {
+              "prompt": 5,
+              "tok_s": 87.3
+            }
+          ],
+          "trial_mean": 85.54,
+          "trial_stdev_pop": 2.407
+        },
+        {
+          "trial": 3,
+          "results": [
+            {
+              "prompt": 1,
+              "tok_s": 81.1
+            },
+            {
+              "prompt": 2,
+              "tok_s": 84.7
+            },
+            {
+              "prompt": 3,
+              "tok_s": 87.6
+            },
+            {
+              "prompt": 4,
+              "tok_s": 86.1
+            },
+            {
+              "prompt": 5,
+              "tok_s": 87.4
+            }
+          ],
+          "trial_mean": 85.38,
+          "trial_stdev_pop": 2.379
+        }
+      ],
+      "n": 15,
+      "mean_tok_s": 85.5,
+      "min_tok_s": 81.0,
+      "max_tok_s": 87.6,
+      "stdev_pop": 2.454,
+      "run_to_run_stdev": 0.086,
+      "delta_pct_vs_baseline": -38.6
+    }
+  },
+  "v2_published_comparison": {
+    "baseline_v2": 139.9,
+    "n3_baseline": 139.19,
+    "oleg_v2": 65.0,
+    "n3_oleg": 65.24,
+    "oleg_delta_v2": -54,
+    "oleg_delta_n3": -53.1,
+    "srogmann_v2": 85.6,
+    "n3_srogmann": 85.5,
+    "srogmann_delta_v2": -39,
+    "srogmann_delta_n3": -38.6
+  }
+}

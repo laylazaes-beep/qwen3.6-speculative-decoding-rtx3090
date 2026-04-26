@@ -1,0 +1,125 @@
+=== Experiment 2 · N=3 · code/JSON prompts only · standalone 3090 ===
+Start: 2026-04-25T23:57:44Z
+Build: version: 8889 (bcb5eeb64)
+Output: /home/thc1006/bench/n3_codejson_20260426_075744
+NVIDIA GeForce RTX 3090, 137 MiB, 24576 MiB, 350.00 W
+
+================== Trial 1 / 3 ==================
+2026-04-25T23:57:44Z
+
+--- trial=1 cfg=01_baseline n_extra=0 ---
+  [01_baseline p=1] 23:57:44
+[ Prompt: 737.7 t/s | Generation: 139.9 t/s ]
+  [01_baseline p=2] 23:57:48
+[ Prompt: 839.9 t/s | Generation: 138.3 t/s ]
+  [01_baseline p=3] 23:57:52
+[ Prompt: 677.6 t/s | Generation: 139.7 t/s ]
+  [01_baseline p=4] 23:57:56
+[ Prompt: 687.1 t/s | Generation: 139.7 t/s ]
+  [01_baseline p=5] 23:58:01
+[ Prompt: 703.5 t/s | Generation: 139.1 t/s ]
+
+--- trial=1 cfg=02_oleg_draft_2_32 n_extra=6 ---
+  [02_oleg_draft_2_32 p=1] 23:58:05
+[ Prompt: 745.8 t/s | Generation: 62.3 t/s ]
+  [02_oleg_draft_2_32 p=2] 23:58:11
+[ Prompt: 845.5 t/s | Generation: 81.1 t/s ]
+  [02_oleg_draft_2_32 p=3] 23:58:17
+[ Prompt: 640.3 t/s | Generation: 62.6 t/s ]
+  [02_oleg_draft_2_32 p=4] 23:58:23
+[ Prompt: 701.7 t/s | Generation: 64.8 t/s ]
+  [02_oleg_draft_2_32 p=5] 23:58:29
+[ Prompt: 677.1 t/s | Generation: 61.9 t/s ]
+
+--- trial=1 cfg=03_srogmann_draft_48_64 n_extra=6 ---
+  [03_srogmann_draft_48_64 p=1] 23:58:35
+[ Prompt: 725.3 t/s | Generation: 84.8 t/s ]
+  [03_srogmann_draft_48_64 p=2] 23:58:41
+[ Prompt: 839.2 t/s | Generation: 84.1 t/s ]
+  [03_srogmann_draft_48_64 p=3] 23:58:46
+[ Prompt: 694.4 t/s | Generation: 86.4 t/s ]
+  [03_srogmann_draft_48_64 p=4] 23:58:52
+[ Prompt: 696.4 t/s | Generation: 81.3 t/s ]
+  [03_srogmann_draft_48_64 p=5] 23:58:57
+[ Prompt: 712.7 t/s | Generation: 82.3 t/s ]
+
+================== Trial 2 / 3 ==================
+2026-04-25T23:59:03Z
+
+--- trial=2 cfg=01_baseline n_extra=0 ---
+  [01_baseline p=1] 23:59:03
+[ Prompt: 733.0 t/s | Generation: 139.3 t/s ]
+  [01_baseline p=2] 23:59:07
+[ Prompt: 831.1 t/s | Generation: 138.8 t/s ]
+  [01_baseline p=3] 23:59:11
+[ Prompt: 677.9 t/s | Generation: 139.7 t/s ]
+  [01_baseline p=4] 23:59:15
+[ Prompt: 634.5 t/s | Generation: 138.7 t/s ]
+  [01_baseline p=5] 23:59:20
+[ Prompt: 708.6 t/s | Generation: 139.5 t/s ]
+
+--- trial=2 cfg=02_oleg_draft_2_32 n_extra=6 ---
+  [02_oleg_draft_2_32 p=1] 23:59:24
+[ Prompt: 745.7 t/s | Generation: 62.4 t/s ]
+  [02_oleg_draft_2_32 p=2] 23:59:30
+[ Prompt: 781.2 t/s | Generation: 81.0 t/s ]
+  [02_oleg_draft_2_32 p=3] 23:59:36
+[ Prompt: 640.3 t/s | Generation: 62.0 t/s ]
+  [02_oleg_draft_2_32 p=4] 23:59:42
+[ Prompt: 703.3 t/s | Generation: 64.8 t/s ]
+  [02_oleg_draft_2_32 p=5] 23:59:48
+[ Prompt: 724.3 t/s | Generation: 62.5 t/s ]
+
+--- trial=2 cfg=03_srogmann_draft_48_64 n_extra=6 ---
+  [03_srogmann_draft_48_64 p=1] 23:59:54
+[ Prompt: 747.0 t/s | Generation: 84.8 t/s ]
+  [03_srogmann_draft_48_64 p=2] 00:00:00
+[ Prompt: 783.7 t/s | Generation: 84.5 t/s ]
+  [03_srogmann_draft_48_64 p=3] 00:00:05
+[ Prompt: 694.5 t/s | Generation: 86.3 t/s ]
+  [03_srogmann_draft_48_64 p=4] 00:00:10
+[ Prompt: 701.7 t/s | Generation: 81.9 t/s ]
+  [03_srogmann_draft_48_64 p=5] 00:00:16
+[ Prompt: 691.8 t/s | Generation: 81.9 t/s ]
+
+================== Trial 3 / 3 ==================
+2026-04-26T00:00:22Z
+
+--- trial=3 cfg=01_baseline n_extra=0 ---
+  [01_baseline p=1] 00:00:22
+[ Prompt: 735.0 t/s | Generation: 139.2 t/s ]
+  [01_baseline p=2] 00:00:26
+[ Prompt: 831.1 t/s | Generation: 138.8 t/s ]
+  [01_baseline p=3] 00:00:30
+[ Prompt: 680.1 t/s | Generation: 139.5 t/s ]
+  [01_baseline p=4] 00:00:34
+[ Prompt: 686.8 t/s | Generation: 139.2 t/s ]
+  [01_baseline p=5] 00:00:38
+[ Prompt: 711.4 t/s | Generation: 138.9 t/s ]
+
+--- trial=3 cfg=02_oleg_draft_2_32 n_extra=6 ---
+  [02_oleg_draft_2_32 p=1] 00:00:43
+[ Prompt: 721.6 t/s | Generation: 62.3 t/s ]
+  [02_oleg_draft_2_32 p=2] 00:00:49
+[ Prompt: 844.3 t/s | Generation: 81.1 t/s ]
+  [02_oleg_draft_2_32 p=3] 00:00:54
+[ Prompt: 649.2 t/s | Generation: 62.5 t/s ]
+  [02_oleg_draft_2_32 p=4] 00:01:01
+[ Prompt: 703.8 t/s | Generation: 64.7 t/s ]
+  [02_oleg_draft_2_32 p=5] 00:01:07
+[ Prompt: 717.4 t/s | Generation: 62.6 t/s ]
+
+--- trial=3 cfg=03_srogmann_draft_48_64 n_extra=6 ---
+  [03_srogmann_draft_48_64 p=1] 00:01:13
+[ Prompt: 735.1 t/s | Generation: 84.4 t/s ]
+  [03_srogmann_draft_48_64 p=2] 00:01:19
+[ Prompt: 802.8 t/s | Generation: 84.5 t/s ]
+  [03_srogmann_draft_48_64 p=3] 00:01:24
+[ Prompt: 687.9 t/s | Generation: 86.4 t/s ]
+  [03_srogmann_draft_48_64 p=4] 00:01:30
+[ Prompt: 700.9 t/s | Generation: 81.7 t/s ]
+  [03_srogmann_draft_48_64 p=5] 00:01:35
+[ Prompt: 661.1 t/s | Generation: 82.3 t/s ]
+
+=== ALL DONE 2026-04-26T00:01:41Z ===
+Out: /home/thc1006/bench/n3_codejson_20260426_075744

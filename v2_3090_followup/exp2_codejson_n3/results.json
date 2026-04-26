@@ -1,0 +1,343 @@
+{
+  "experiment": "Exp 2 \u2014 N=3 code/JSON workload only (workload-dependency probe)",
+  "host": "standalone 3090 (tailscale-3090, 100.112.135.98)",
+  "gpu": "1x RTX 3090 24GB, no power limit",
+  "engine": "llama.cpp build 8889 (bcb5eeb64), post PR #22227 speculative-simple checkpoint support",
+  "main_model": "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf (~21 GB)",
+  "draft_model": "Qwen3.5-0.8B-Q4_K_M.gguf (~508 MB, vocab-matched)",
+  "common_args": "-ngl 999 -c 16384 -fa on -ctk q8_0 -ctv q8_0 -n 200 --temp 0.5 --seed 42 -no-cnv -st",
+  "prompts": {
+    "1": "ThreadSafeLRUCache (Python class, RLock)",
+    "2": "REST API JSON spec for user authentication",
+    "3": "Rust merge_sort<T: Ord + Clone> in-place",
+    "4": "Nginx reverse proxy JSON config",
+    "5": "PostgreSQL top-10 customers (last 30 days)"
+  },
+  "n_trials": 3,
+  "n_prompts": 5,
+  "timestamp": "2026-04-26T00:01:41Z",
+  "configs": {
+    "01_baseline": {
+      "n_samples": 15,
+      "mean_tok_s": 139.22,
+      "stdev_tok_s": 0.4554432691659496,
+      "min_tok_s": 138.3,
+      "max_tok_s": 139.9,
+      "per_prompt_mean": {
+        "1": 139.46666666666667,
+        "2": 138.63333333333335,
+        "3": 139.63333333333333,
+        "4": 139.2,
+        "5": 139.16666666666666
+      },
+      "raw": [
+        [
+          1,
+          1,
+          737.7,
+          139.9
+        ],
+        [
+          1,
+          2,
+          839.9,
+          138.3
+        ],
+        [
+          1,
+          3,
+          677.6,
+          139.7
+        ],
+        [
+          1,
+          4,
+          687.1,
+          139.7
+        ],
+        [
+          1,
+          5,
+          703.5,
+          139.1
+        ],
+        [
+          2,
+          1,
+          733.0,
+          139.3
+        ],
+        [
+          2,
+          2,
+          831.1,
+          138.8
+        ],
+        [
+          2,
+          3,
+          677.9,
+          139.7
+        ],
+        [
+          2,
+          4,
+          634.5,
+          138.7
+        ],
+        [
+          2,
+          5,
+          708.6,
+          139.5
+        ],
+        [
+          3,
+          1,
+          735.0,
+          139.2
+        ],
+        [
+          3,
+          2,
+          831.1,
+          138.8
+        ],
+        [
+          3,
+          3,
+          680.1,
+          139.5
+        ],
+        [
+          3,
+          4,
+          686.8,
+          139.2
+        ],
+        [
+          3,
+          5,
+          711.4,
+          138.9
+        ]
+      ],
+      "delta_vs_baseline_pct": 0.0
+    },
+    "02_oleg_draft_2_32": {
+      "n_samples": 15,
+      "mean_tok_s": 66.57333333333334,
+      "stdev_tok_s": 7.56603941180274,
+      "min_tok_s": 61.9,
+      "max_tok_s": 81.1,
+      "per_prompt_mean": {
+        "1": 62.33333333333333,
+        "2": 81.06666666666666,
+        "3": 62.36666666666667,
+        "4": 64.76666666666667,
+        "5": 62.333333333333336
+      },
+      "raw": [
+        [
+          1,
+          1,
+          745.8,
+          62.3
+        ],
+        [
+          1,
+          2,
+          845.5,
+          81.1
+        ],
+        [
+          1,
+          3,
+          640.3,
+          62.6
+        ],
+        [
+          1,
+          4,
+          701.7,
+          64.8
+        ],
+        [
+          1,
+          5,
+          677.1,
+          61.9
+        ],
+        [
+          2,
+          1,
+          745.7,
+          62.4
+        ],
+        [
+          2,
+          2,
+          781.2,
+          81.0
+        ],
+        [
+          2,
+          3,
+          640.3,
+          62.0
+        ],
+        [
+          2,
+          4,
+          703.3,
+          64.8
+        ],
+        [
+          2,
+          5,
+          724.3,
+          62.5
+        ],
+        [
+          3,
+          1,
+          721.6,
+          62.3
+        ],
+        [
+          3,
+          2,
+          844.3,
+          81.1
+        ],
+        [
+          3,
+          3,
+          649.2,
+          62.5
+        ],
+        [
+          3,
+          4,
+          703.8,
+          64.7
+        ],
+        [
+          3,
+          5,
+          717.4,
+          62.6
+        ]
+      ],
+      "delta_vs_baseline_pct": -52.18
+    },
+    "03_srogmann_draft_48_64": {
+      "n_samples": 15,
+      "mean_tok_s": 83.84,
+      "stdev_tok_s": 1.803884696980381,
+      "min_tok_s": 81.3,
+      "max_tok_s": 86.4,
+      "per_prompt_mean": {
+        "1": 84.66666666666667,
+        "2": 84.36666666666666,
+        "3": 86.36666666666667,
+        "4": 81.63333333333334,
+        "5": 82.16666666666667
+      },
+      "raw": [
+        [
+          1,
+          1,
+          725.3,
+          84.8
+        ],
+        [
+          1,
+          2,
+          839.2,
+          84.1
+        ],
+        [
+          1,
+          3,
+          694.4,
+          86.4
+        ],
+        [
+          1,
+          4,
+          696.4,
+          81.3
+        ],
+        [
+          1,
+          5,
+          712.7,
+          82.3
+        ],
+        [
+          2,
+          1,
+          747.0,
+          84.8
+        ],
+        [
+          2,
+          2,
+          783.7,
+          84.5
+        ],
+        [
+          2,
+          3,
+          694.5,
+          86.3
+        ],
+        [
+          2,
+          4,
+          701.7,
+          81.9
+        ],
+        [
+          2,
+          5,
+          691.8,
+          81.9
+        ],
+        [
+          3,
+          1,
+          735.1,
+          84.4
+        ],
+        [
+          3,
+          2,
+          802.8,
+          84.5
+        ],
+        [
+          3,
+          3,
+          687.9,
+          86.4
+        ],
+        [
+          3,
+          4,
+          700.9,
+          81.7
+        ],
+        [
+          3,
+          5,
+          661.1,
+          82.3
+        ]
+      ],
+      "delta_vs_baseline_pct": -39.78
+    }
+  },
+  "interpretation": "Tests whether structured/low-entropy prompts (code & JSON) flip spec-decode positive on consumer Ampere \u2014 they do not. baseline 139.2 tok/s, oleg --draft-min 2 --draft-max 32 66.6 tok/s (-52.2%), srogmann --draft-min 48 --draft-max 64 83.8 tok/s (-39.8%). All structured prompts collapse spec-decode to ~46-65% of baseline, the same regime as v2's diverse prompts. Workload-shape hypothesis (joshua Spark NVFP4 idea) is REFUTED for this hardware/engine."
+}

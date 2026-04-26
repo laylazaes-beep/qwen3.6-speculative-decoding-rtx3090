@@ -1,5 +1,32 @@
 # Qwen3.6-35B-A3B speculative decoding on RTX 3090 — first public benchmark
 
+> **2026-04-26 — Exp 2 (code/JSON workload, N=3, standalone 3090) added.**
+> A reader-suggested hypothesis was that structured / low-entropy prompts
+> (code, JSON config, SQL) might let llama.cpp's `--draft-min/--draft-max`
+> ngram speculation win where diverse natural-language prompts lost. Tested
+> with 5 code/JSON prompts × 3 trials × 3 configs = 45 measurements.
+> **Result: still NET LOSS** — baseline 139.22 ± 0.46 tok/s, Oleg
+> `--draft-min 2 --draft-max 32` 66.57 ± 7.57 tok/s (**−52 %**), srogmann
+> `--draft-min 48 --draft-max 64` 83.84 ± 1.80 tok/s (**−40 %**). The
+> workload-shape hypothesis is refuted on llama.cpp + Q4 + RTX 3090; the
+> regression is structural (MoE expert-saturation, see "Why" paragraph).
+> Full data + reproducer in
+> [`v2_3090_followup/exp2_codejson_n3/`](v2_3090_followup/exp2_codejson_n3/).
+>
+> **The picture changes for vLLM, however.** A clean A/B retest in the
+> sibling repo [`thc1006/qwen3.6-vllm-2x3090`](https://github.com/thc1006/qwen3.6-vllm-2x3090)
+> on the same physical hardware, run with **matched flags AND
+> `--no-enable-prefix-caching`**, found vLLM `method=mtp num_speculative_tokens=1`
+> is **+27.5 % faster decode rate** (decode TPOT 7.620 ± 0.022 ms → 5.976
+> ± 0.456 ms, holds across all 5 prompts and concurrencies C ∈ {1, 4, 8}).
+> The previously reported vLLM −12 % was a flag confound + an MTP × prefix-cache
+> interaction artifact ([vllm #38182](https://github.com/vllm-project/vllm/issues/38182)
+> reports MTP drops cache hit rate ~92 % → ~71 %). **So: the negative
+> finding in this repo is engine + spec-method specific (llama.cpp draft
+> on consumer Ampere) — not hardware-class-independent as v2.2 stated.**
+> The "Cross-engine confirmation" paragraph below has been corrected
+> accordingly.
+
 > **UPDATE 2026-04-22 — v2 follow-up bench added**
 > In response to [Oleg-dM's comment on the HF discussion](https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/discussions/14),
 > a second independent bench was run on a fresh single-3090 box, testing
@@ -45,7 +72,7 @@
 
 ![Cross-hardware comparison: spec-decode net loss across 1× 3090 single, 2× 3090 TP=2 PCIe, 2× A100 NVLink](https://raw.githubusercontent.com/thc1006/qwen3.6-vllm-2x3090/master/analysis/plot_cross_hardware.png)
 
-**Cross-engine confirmation (2026-04-25, refined 2026-04-26):** the same negative direction holds in **vLLM 0.19.1** with `--speculative-config method=mtp num_speculative_tokens=1` (qwen3.6's built-in MTP heads). Two independent measurements: **2× RTX 3090 PCIe** shows mean −12 % throughput with 65× variance blowup (caveat: the 3090 baseline used `gpu-mem-util 0.90 / max-num-seqs 8` and the MTP run used `0.80 / 2`, so the −12 % conflates method-effect with config-effect — disclosed in the sibling repo's MTP JSON). **2× A100-80GB SXM4 NVLink (Modal, clean A/B with matched flags)** shows prompt-4 decode-only delta **−11.4 %** (TTFT-adjusted; robust across TTFT ∈ [0, 200 ms]). That A100 NVLink HBM2e (2 TB/s + ~600 GB/s interconnect) shows the same magnitude regression as 3090 GDDR6X PCIe rules out both "GDDR6X memory bandwidth as bottleneck" and "PCIe-x8 allreduce as bottleneck" — the regression is **hardware-class-independent** at single-stream batch=1 across consumer Ampere + datacenter Ampere (and Hopper H20-3e per [vllm #38182](https://github.com/vllm-project/vllm/issues/38182)). Full data and JSON: [thc1006/qwen3.6-vllm-2x3090](https://github.com/thc1006/qwen3.6-vllm-2x3090) (`results/modal_2x_a100_v2.json`).
+**Cross-engine status (corrected 2026-04-26):** the negative direction reported here is **engine-specific to llama.cpp + Q4 + draft speculation**, not engine-independent as v2.2 stated. A v3 clean A/B retest in the sibling repo on **2× RTX 3090 PCIe with vLLM 0.19.1** with matched flags `0.90 / 8 / hermes` AND `--no-enable-prefix-caching` flips MTP k=1 to **−21.6 % decode TPOT (≡ +27.5 % faster decode rate)** with N=5 trials × 5 prompts. v1/v2 published vLLM −12 % was a flag confound (0.80/2 vs 0.90/8); the previously cited Modal A100 −11.4 % was prefix-cache-ON and is best read as the prefix-cache-ON-regime A100 datapoint, **not** as evidence MTP is intrinsically negative — vllm [#38182](https://github.com/vllm-project/vllm/issues/38182) reports MTP drops cache hit rate ~92 % → ~71 %, so cache-ON masks MTP's compute speedup with cache-loss penalty. Full v3 methodology + per-prompt + concurrent C∈{1,4,8} data: [thc1006/qwen3.6-vllm-2x3090](https://github.com/thc1006/qwen3.6-vllm-2x3090) (`results/mtp_v3_clean_ab_*.json`).
 
 This is consistent with the MoE-specific pathology in [MoESD (arXiv 2505.19645)](https://arxiv.org/html/2505.19645) and [Utility-Driven SD for MoE (arXiv 2506.20675)](https://arxiv.org/pdf/2506.20675): for a 3B-active MoE like A3B, draft batch `K` stays below the expert-saturation threshold (~94 tokens for this sparsity), so every extra draft token triggers new expert loading that outweighs the verification savings.
 
@@ -99,7 +126,9 @@ With `predicted_per_second` as the per-request decode rate reported by llama-ser
 
 ## Why — in one paragraph
 
-Qwen3.6-35B-A3B routes 8-of-256 experts per token (sparsity ρ ≈ 0.031). Per [MoESD](https://arxiv.org/html/2505.19645) the batch size needed to saturate the expert set is `T_thres = log_{1-ρ}(1 - 0.95) ≈ 94`. For any `K` draft tokens below that, each drafted token has high probability of pulling a fresh expert slice into compute, and the verification forward pass ends up loading the *union* of those per-token expert sets. At single-stream batch=1, K (1–32) ≪ T_thres, so this expert-union overhead is paid in full with no amortization vs autoregressive — exceeding the savings from skipping per-token forward passes, even at 100 % acceptance. This argument is independent of absolute memory bandwidth: the same negative direction is now observed on (a) consumer 3090 GDDR6X 936 GB/s, (b) datacenter A100 SXM4 HBM2e 2 TB/s + NVLink (sibling repo Modal A100 bench, clean A/B), and (c) Hopper H20-3e per [vllm #38182](https://github.com/vllm-project/vllm/issues/38182) (Qwen3.5-35B-A3B-FP8, MTP lowers prefix-cache hit rate from ~92 % → ~71 %). Reported for Mixtral as well in [arXiv 2506.20675](https://arxiv.org/pdf/2506.20675).
+Qwen3.6-35B-A3B routes 8-of-256 experts per token (sparsity ρ ≈ 0.031). Per [MoESD](https://arxiv.org/html/2505.19645) the batch size needed to saturate the expert set is `T_thres = log_{1-ρ}(1 - 0.95) ≈ 94`. For any `K` draft tokens below that, each drafted token has high probability of pulling a fresh expert slice into compute, and the verification forward pass ends up loading the *union* of those per-token expert sets. At single-stream batch=1, K (1–32) ≪ T_thres, so this expert-union overhead is paid in full with no amortization vs autoregressive — exceeding the savings from skipping per-token forward passes, even at 100 % acceptance.
+
+**Scope correction (2026-04-26):** earlier versions of this paragraph claimed the mechanism is "engine-independent" / "hardware-class-independent" because the same negative direction was seen across 3090 (llama.cpp draft) and A100 NVLink (vLLM MTP, prefix-cache-ON) and Hopper H20-3e ([vllm #38182](https://github.com/vllm-project/vllm/issues/38182)). The v3 vLLM clean A/B retest with prefix-cache OFF on the same 3090 hardware ([sibling repo](https://github.com/thc1006/qwen3.6-vllm-2x3090)) flipped vLLM MTP k=1 to **+27.5 %**, so the engine-independence claim was wrong. The expert-saturation argument **does** still explain why **llama.cpp's draft-then-verify path** loses on consumer Ampere (the verify pass loads the union of K positions' expert sets at draft K=1–32 ≪ T_thres). What's different about vLLM MTP k=1 is the structurally smaller K (k=1 vs llama.cpp drafts of 5–64) and the lighter-weight verify path that reuses the target's hidden states without a separate draft-model forward pass. So: the mechanism is real and real-world relevant for **draft-model spec-decode**, but does not generalize to all spec-decode methods. Mixtral measurements in [arXiv 2506.20675](https://arxiv.org/pdf/2506.20675) match the draft-spec direction.
 
 Counter-example: the same `ngram-mod` machinery in [PR #20075](https://github.com/ggml-org/llama.cpp/pull/20075) shows Qwen3.5-**122B-A10B** (10 B active) gaining roughly **+15–45 %** on Apple M3 Max (PR author's bench, 0.8 B draft, acceptance 63–89 %), and **+31 %** to **+119 %** on AMD Strix Halo gfx1151 with the REAP-pruned variant ([@0xSero](https://github.com/0xSero)'s comment in the same PR). A10B has a 3.3× larger active footprint and a correspondingly lower `T_thres`, which is why it gains where A3B loses on consumer GPUs.
 

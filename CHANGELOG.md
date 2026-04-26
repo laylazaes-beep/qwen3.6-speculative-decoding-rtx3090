@@ -6,6 +6,34 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning is not strictly semver — each numbered release is a public
 publication point with its own data set.
 
+## [v2.3] — 2026-04-26 (afternoon)
+
+### Added
+- [`v2_3090_followup/exp2_codejson_n3/`](v2_3090_followup/exp2_codejson_n3/)
+  — workload-shape probe. 5 code/JSON prompts (Python class with RLock,
+  REST API spec JSON, Rust merge_sort, Nginx reverse proxy config,
+  PostgreSQL top-10 customers query) × 3 trials × 3 configs (baseline,
+  Oleg `--draft-min 2 --draft-max 32`, srogmann `--draft-min 48 --draft-max 64`)
+  on standalone single 3090. **Result confirms v2 negative direction**:
+  baseline 139.22 ± 0.46 tok/s, Oleg 66.57 ± 7.57 tok/s (−52 %), srogmann
+  83.84 ± 1.80 tok/s (−40 %). The "structured prompts win" hypothesis is
+  refuted on llama.cpp + Q4 + RTX 3090.
+- README banner at the top documenting Exp 2 + the cross-engine status
+  correction.
+
+### Changed
+- **MAJOR scope correction** — earlier wording (v2.2) claimed the spec-decode
+  negative finding is "hardware-class-independent" across consumer Ampere +
+  datacenter Ampere NVLink + Hopper. A v3 clean A/B retest in the sibling
+  repo [`thc1006/qwen3.6-vllm-2x3090`](https://github.com/thc1006/qwen3.6-vllm-2x3090)
+  (matched flags + `--no-enable-prefix-caching`) found vLLM MTP k=1 on the
+  **same 2× RTX 3090 PCIe hardware** is **+27.5 % faster decode rate**, not
+  −12 %. So the negative direction is **engine + spec-method specific**:
+  it holds for `llama.cpp` draft-then-verify (this repo's data) but does
+  not hold for `vLLM` MTP k=1 with prefix-cache disabled. README "Cross-engine
+  confirmation" paragraph and the "Why" paragraph have been corrected.
+- README banner updated; `v2_3090_followup` directory expanded.
+
 ## [v2.2] — 2026-04-26
 
 ### Changed
