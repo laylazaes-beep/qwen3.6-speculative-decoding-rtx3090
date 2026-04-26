@@ -10,15 +10,24 @@ _Target URL: https://github.com/ggml-org/llama.cpp/pull/19493 (or as a fresh com
 > (post PR #22227 speculative-simple checkpoint) — same results.
 > Conclusion holds. See `v2_3090_followup/SUMMARY.md` in the repo.
 >
-> **UPDATE 2026-04-25 — cross-engine confirmation.** Tested the same
-> model on vLLM 0.19.1 with `--speculative-config method=mtp
-> num_speculative_tokens=1` (qwen3.6's built-in MTP heads) on 2× RTX
-> 3090 TP=2: mean **111 tok/s vs no-MTP 126** (−12 %), worst-case run
-> 75 tok/s (variance ~65× larger, same bimodal-tail pattern as
-> llama.cpp). Same negative direction across both engines suggests the
-> regression is a **model + hardware** property — not a llama.cpp
-> implementation issue. Full data:
-> [thc1006/qwen3.6-vllm-2x3090](https://github.com/thc1006/qwen3.6-vllm-2x3090).
+> **UPDATE 2026-04-25 — cross-engine first attempt (SUPERSEDED 2026-04-26).** I originally tested the same
+> model on vLLM 0.19.1 with `--speculative-config method=mtp num_speculative_tokens=1`
+> (qwen3.6's built-in MTP heads) on 2× RTX 3090 TP=2 and reported mean **111 tok/s vs no-MTP 126** (−12 %),
+> framing it as cross-engine corroboration that the regression is a model + hardware property. **That
+> framing was wrong.**
+>
+> **UPDATE 2026-04-26 — v3 clean A/B retest reverses the vLLM sign.** The −12 % had two confounders that
+> I controlled in v3: (a) flag mismatch (MTP run used `--gpu-memory-utilization 0.80 --max-num-seqs 2`
+> while no-MTP baseline used `0.90 / 8`), and (b) `--enable-prefix-caching` ON in both runs, where MTP
+> has a known interaction that drops cache hit rate ~92 % → ~71 % per [vllm #38182](https://github.com/vllm-project/vllm/issues/38182).
+> With matched flags `0.90/8` AND `--no-enable-prefix-caching`, vLLM MTP k=1 on the same 2× RTX 3090
+> hardware is **+27.5 % faster decode rate** (decode TPOT 7.620 ms → 5.976 ms, N=5 trials × 5 prompts).
+> So **the regression in this PR's data is engine + spec-method specific to llama.cpp draft-spec, NOT engine-independent**.
+> The MoE expert-saturation argument still explains why llama.cpp's K=5–64 draft-then-verify path loses
+> on consumer Ampere (verify pass loads union of K positions' expert sets at K ≪ T_thres ≈ 94), but does
+> not generalize to vLLM MTP k=1 which uses structurally smaller K and a lighter-weight verify path that
+> reuses target hidden states. Full v3 data + reproducer:
+> [thc1006/qwen3.6-vllm-2x3090 v3.0](https://github.com/thc1006/qwen3.6-vllm-2x3090/releases/tag/v3.0).
 
 ---
 
