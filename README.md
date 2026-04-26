@@ -1,5 +1,7 @@
 # Qwen3.6-35B-A3B speculative decoding on RTX 3090 — first public benchmark
 
+<a href="https://doi.org/10.5281/zenodo.19776558"><img src="https://zenodo.org/badge/1216484498.svg" alt="DOI"></a>
+
 > **2026-04-26 — Exp 2 (code/JSON workload, N=3, standalone 3090) added.**
 > A reader-suggested hypothesis was that structured / low-entropy prompts
 > (code, JSON config, SQL) might let llama.cpp's `--draft-min/--draft-max`
